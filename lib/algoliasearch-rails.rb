@@ -375,8 +375,12 @@ module AlgoliaSearch
               super(*args)
             end
           end
-        else
-          after_destroy { |searchable| searchable.algolia_enqueue_remove_from_index!(algolia_synchronous?) } if respond_to?(:after_destroy)
+        elsif respond_to?(:after_destroy)
+          after_destroy do |searchable|
+            searchable.instance_exec do
+              algolia_enqueue_remove_from_index!(algolia_synchronous?)
+            end
+          end
         end
       end
     end
