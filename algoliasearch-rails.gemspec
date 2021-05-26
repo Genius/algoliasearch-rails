@@ -2,6 +2,8 @@
 
 VERSION = File.read(File.join(File.dirname(__FILE__), 'VERSION')).strip
 
+require 'date'
+
 Gem::Specification.new do |s|
   s.name = "algoliasearch-rails"
   s.version = VERSION
