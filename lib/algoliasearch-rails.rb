@@ -70,9 +70,9 @@ module AlgoliaSearch
       end
     end
 
-    def initialize(options, block)
+    def initialize(options, &block)
       @options = options
-      instance_exec(&block) if block
+      instance_exec(&block) if block_given?
     end
 
     def attribute(*names, &block)
@@ -199,7 +199,7 @@ module AlgoliaSearch
       raise ArgumentError.new('Options auto_index and auto_remove cannot be set on nested indexes') if options[:auto_index] || options[:auto_remove]
       options[:index_name] = index_name
       @additional_indexes ||= {}
-      @additional_indexes[options] = IndexSettings.new(options, Proc.new)
+      @additional_indexes[options] = IndexSettings.new(options, &block)
     end
 
     def add_slave(index_name, options = {}, &block)
@@ -296,7 +296,7 @@ module AlgoliaSearch
     end
 
     def algoliasearch(options = {}, &block)
-      self.algoliasearch_settings = IndexSettings.new(options, block_given? ? Proc.new : nil)
+      self.algoliasearch_settings = IndexSettings.new(options, &block)
       self.algoliasearch_options = { :type => algolia_full_const_get(model_name.to_s), :per_page => algoliasearch_settings.get_setting(:hitsPerPage) || 10, :page => 1 }.merge(options)
 
       attr_accessor :highlight_result, :snippet_result
